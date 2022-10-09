@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+//import Differentiator
 
 // MARK: - Control
 public enum control {
@@ -18,6 +19,7 @@ public enum control {
     case save
     case share
     case clear
+    case undo
 }
 
 extension PhotoEditorViewController {
@@ -39,10 +41,12 @@ extension PhotoEditorViewController {
 
     @IBAction func stickersButtonTapped(_ sender: Any) {
         addStickersViewController()
+        isTyping = false
     }
 
     @IBAction func drawButtonTapped(_ sender: Any) {
         isDrawing = true
+        isTyping = false
         canvasImageView.isUserInteractionEnabled = false
         doneButton.isHidden = false
         colorPickerView.isHidden = false
@@ -52,10 +56,10 @@ extension PhotoEditorViewController {
     @IBAction func textButtonTapped(_ sender: Any) {
         isTyping = true
         let textView = UITextView(frame: CGRect(x: 0, y: canvasImageView.center.y,
-                                                width: UIScreen.main.bounds.width, height: 30))
+                                                width: UIScreen.main.bounds.width, height: 25))
         
         textView.textAlignment = .center
-        textView.font = UIFont(name: "Helvetica", size: 30)
+        textView.font = UIFont(name: "Helvetica", size: 18)
         textView.textColor = textColor
         textView.layer.shadowColor = UIColor.black.cgColor
         textView.layer.shadowOffset = CGSize(width: 1.0, height: 0.0)
@@ -68,7 +72,7 @@ extension PhotoEditorViewController {
         self.canvasImageView.addSubview(textView)
         addGestures(view: textView)
         textView.becomeFirstResponder()
-    }    
+    }
     
     @IBAction func doneButtonTapped(_ sender: Any) {
         view.endEditing(true)
@@ -77,6 +81,15 @@ extension PhotoEditorViewController {
         canvasImageView.isUserInteractionEnabled = true
         hideToolbar(hide: false)
         isDrawing = false
+        isMarking = false
+    }
+    
+    @IBAction func markButtonPressed(_ sender: Any) {
+        isMarking = true
+        isTyping = false
+        doneButton.isHidden = false
+        colorPickerView.isHidden = true
+        hideToolbar(hide: true)
     }
     
     //MARK: Bottom Toolbar
@@ -92,11 +105,35 @@ extension PhotoEditorViewController {
     }
     
     @IBAction func clearButtonTapped(_ sender: AnyObject) {
+        isTyping = false
+        isMarking = false
         //clear drawing
         canvasImageView.image = nil
         //clear stickers and textviews
+        imagesArray.removeAll()
         for subview in canvasImageView.subviews {
             subview.removeFromSuperview()
+        }
+    }
+    
+    @IBAction func undoButtonTapped(_ sender: AnyObject) {
+        //clear drawing
+       // canvasImageView.image = nil
+        //clear stickers and textviews
+//        if imagesArray.count != 0 {
+//             imagesArray.removeLast()
+//        }
+        
+        if let lastElement = canvasImageView.subviews.last {
+            if lastElement is InvisibleView{
+                lastElement.removeFromSuperview()
+                if imagesArray.count != 0 {
+                  imagesArray.removeLast()
+                }
+            }else{
+                lastElement.removeFromSuperview()
+            }
+            
         }
     }
     
@@ -131,6 +168,8 @@ extension PhotoEditorViewController {
             case .sticker:
                 stickerButton.isHidden = true
             case .text:
+                stickerButton.isHidden = true
+            case .undo:
                 stickerButton.isHidden = true
             }
         }

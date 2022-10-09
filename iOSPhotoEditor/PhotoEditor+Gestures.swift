@@ -156,7 +156,7 @@ extension PhotoEditorViewController : UIGestureRecognizerDelegate  {
     }
     
     /**
-     Moving Objects 
+     Moving Objects
      delete the view if it's inside the delete view
      Snap the view back if it's out of the canvas
      */

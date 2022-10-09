@@ -26,7 +26,9 @@ extension PhotoEditorViewController: UITextViewDelegate {
         lastTextViewFont = textView.font!
         activeTextView = textView
         textView.superview?.bringSubviewToFront(textView)
-        textView.font = UIFont(name: "Helvetica", size: 30)
+        textView.font = UIFont(name: "Helvetica", size: 18)
+        let oldFrame = textView.frame
+        textView.frame.size = CGSize(width: UIScreen.main.bounds.width, height: oldFrame.height)
         UIView.animate(withDuration: 0.3,
                        animations: {
                         textView.transform = CGAffineTransform.identity
@@ -37,12 +39,14 @@ extension PhotoEditorViewController: UITextViewDelegate {
     }
     
     public func textViewDidEndEditing(_ textView: UITextView) {
-        guard lastTextViewTransform != nil && lastTextViewTransCenter != nil && lastTextViewFont != nil
-            else {
+        currentTextValue = textView.text
+        guard lastTextViewTransform != nil && lastTextViewTransCenter != nil && lastTextViewFont != nil else {
                 return
         }
         activeTextView = nil
         textView.font = self.lastTextViewFont!
+        let contentSize = textView.sizeThatFits(textView.bounds.size)
+        textView.frame.size = CGSize(width: contentSize.width, height: contentSize.height)
         UIView.animate(withDuration: 0.3,
                        animations: {
                         textView.transform = self.lastTextViewTransform!

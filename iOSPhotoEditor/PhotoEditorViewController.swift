@@ -38,16 +38,27 @@ public final class PhotoEditorViewController: UIViewController {
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var shareButton: UIButton!
     @IBOutlet weak var clearButton: UIButton!
+    @IBOutlet weak var undoButton: UIButton!
+    @IBOutlet weak var markButton: UIButton!
     
     public var image: UIImage?
     /**
      Array of Stickers -UIImage- that the user will choose from
      */
     public var stickers : [UIImage] = []
+    
+    public var imagesArray: [UIImage] = [] {
+        didSet
+             {
+                 canvasImageView.image = imagesArray.last
+             }
+    }
     /**
      Array of Colors that will show while drawing or typing
      */
     public var colors  : [UIColor] = []
+    
+    public var lines = [[CGPoint]]()
     
     public var photoEditorDelegate: PhotoEditorDelegate?
     var colorsCollectionViewDelegate: ColorsCollectionViewDelegate!
@@ -68,6 +79,8 @@ public final class PhotoEditorViewController: UIViewController {
     var activeTextView: UITextView?
     var imageViewToPan: UIImageView?
     var isTyping: Bool = false
+    var currentTextValue: String = ""
+    var isMarking: Bool = false
     
     
     var stickersViewController: StickersViewController!
@@ -124,6 +137,12 @@ public final class PhotoEditorViewController: UIViewController {
             UINib(nibName: "ColorCollectionViewCell", bundle: Bundle(for: ColorCollectionViewCell.self)),
             forCellWithReuseIdentifier: "ColorCollectionViewCell")
     }
+    
+//    func setImageView(image: UIImage) {
+//        imageView.image = image
+//        let size = image.suitableSize(heightLimit: UIScreen.main.bounds.height - 125)
+//        imageViewHeightConstraint.constant = (size?.height)!
+//    }
     
     func setImageView(image: UIImage) {
         imageView.image = image

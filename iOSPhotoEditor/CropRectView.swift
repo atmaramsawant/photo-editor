@@ -1,4 +1,3 @@
-
 //
 //  CropRectView.swift
 //  CropViewController
@@ -9,7 +8,7 @@
 
 import UIKit
 
-protocol CropRectViewDelegate: class {
+protocol CropRectViewDelegate: AnyObject {
     func cropRectViewDidBeginEditing(_ view: CropRectView)
     func cropRectViewDidChange(_ view: CropRectView)
     func cropRectViewDidEndEditing(_ view: CropRectView)

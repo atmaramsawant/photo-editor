@@ -44,7 +44,7 @@ extension PhotoEditorViewController {
             self.stickersViewController.removeFromParent()
             self.hideToolbar(hide: false)
         })
-    }    
+    }
 }
 
 extension PhotoEditorViewController: StickersViewControllerDelegate {
